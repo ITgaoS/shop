@@ -1,0 +1,27 @@
+{% extends "buyer/base.html" %}
+{% block login %}
+     <div class="login_btn fl">
+    {% if email %}
+        用户名：<a href="#">{{ email }}</a>
+        <a href="/Buyer/logout/">退出</a>
+    {% else %}
+	<a href="/Buyer/login/">登录</a>
+     <span>|</span>
+     <a href="register.html">注册</a>
+    {% endif %}
+    </div>
+    {% endblock %}
+{% block title %}
+    支付结果
+{% endblock %}
+
+{% block content %}
+    <table>
+    {% for k,v in data.items %}
+        <tr>
+            <th>{{ k }}</th>
+            <td>{{ v }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

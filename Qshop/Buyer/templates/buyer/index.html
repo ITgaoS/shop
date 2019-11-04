@@ -1,0 +1,78 @@
+{% extends "buyer/base.html" %}
+{% block title %}
+首页
+{% endblock %}
+{% block login %}
+     <div class="login_btn fl">
+    {% if email %}
+        用户名：<a href="/Buyer/cart/">{{ email }}</a>
+        <a href="/Buyer/logout/">退出</a>
+    {% else %}
+	<a href="/Buyer/login/">登录</a>
+     <span>|</span>
+     <a href="register.html">注册</a>
+    {% endif %}
+    </div>
+    {% endblock %}
+{% block content %}
+{% load temp_tags %}
+
+
+	<div class="center_con clearfix">
+		<ul class="subnav fl">
+			<li><a href="#model01" class="fruit">新鲜水果</a></li>
+			<li><a href="#model02" class="seafood">海鲜水产</a></li>
+			<li><a href="#model03" class="meet">猪牛羊肉</a></li>
+			<li><a href="#model04" class="egg">禽类蛋品</a></li>
+			<li><a href="#model05" class="vegetables">新鲜蔬菜</a></li>
+			<li><a href="#model06" class="ice">速冻食品</a></li>
+		</ul>
+		<div class="slide fl">
+			<ul class="slide_pics">
+				<li><img src="/static/buyer/images/slide.jpg" alt="幻灯片"></li>
+				<li><img src="/static/buyer/images/slide02.jpg" alt="幻灯片"></li>
+				<li><img src="/static/buyer/images/slide03.jpg" alt="幻灯片"></li>
+				<li><img src="/static/buyer/images/slide04.jpg" alt="幻灯片"></li>
+			</ul>
+			<div class="prev"></div>
+			<div class="next"></div>
+			<ul class="points"></ul>
+		</div>
+		<div class="adv fl">
+			<a href="#"><img src="/static/buyer/images/adv01.jpg"></a>
+			<a href="#"><img src="/static/buyer/images/adv02.jpg"></a>
+		</div>
+	</div>
+{% for t in type_data %}
+<div class="list_model">
+		<div class="list_title clearfix">
+			<h3 class="fl" id="model01">新鲜水果</h3>
+			<div class="subtitle fl">
+				<span>|</span>
+				<a href="#">鲜芒</a>
+				<a href="#">加州提子</a>
+				<a href="#">亚马逊牛油果</a>
+			</div>
+			<a href="#" class="goods_more fr" id="fruit_more">查看更多 ></a>
+		</div>
+
+		<div class="goods_con clearfix">
+			<div class="goods_banner fl"><img src="/static/buyer/images/banner01.jpg"></div>
+			<ul class="goods_list fl">
+				{% for f in  t %}
+				<li>
+					<h4><a href="/Buyer/goods/{{ f.id }}/">{{ f.name }}</a></h4>
+					<a href="/Buyer/goods/{{ f.id }}/"><img src="/static/{{ f.picture }}"></a>
+					<div class="prize">¥ {{ f.price }}</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endfor %}
+
+
+
+
+
+{% endblock %}

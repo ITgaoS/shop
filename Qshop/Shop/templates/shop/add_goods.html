@@ -1,0 +1,60 @@
+{% extends "shop/base.html"%}
+{% block content %}
+    <form  method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+    <div style="width: 50%; margin: 0 auto">
+        <p>
+            <input class="form-control form-control-user" name="name" placeholder="商品名称" type="text" value="{{ goods.name}}">
+        </p>
+        <p>
+            <input class="form-control form-control-user" name="price" placeholder="价格" type="text" value="{{ goods.price }}">
+        </p>
+        <p>
+            <input class="form-control form-control-user" name="number" placeholder="商品数量" type="number" value="{{ goods.number }}">
+        </p>
+        <p>
+            {% if goods.id %}
+            <input class="form-control form-control-user" name="production" placeholder="商品出厂日期" type="text" value="{{ goods.production }}">
+            {% else %}
+             <input class="form-control form-control-user" name="production" placeholder="商品出厂日期" type="datetime-local" value="{{ goods.production }}">
+            {% endif %} </p>
+    <p>
+        <select class="form-control form-control-user" name="goods_type">
+            {% for t in type_list %}
+                <option value="{{ t.id }}" >{{ t.name }}</option>
+            {% endfor %}
+
+        </select>
+    </p>
+        <p>
+
+            <input class="form-control form-control-user" name="safe_date" placeholder="保质期" type="text" value="{{ goods.safe_date }}">
+        </p><p>
+        <textarea id="description" class="form-control form-control-user" name="description" >
+            {{ goods.description }}
+        </textarea>
+        </p>
+        <img src="/static/{{ goods.picture }}" alt="" >
+        <input type="file" name="picture" placeholder="商品图片">
+
+       </p>
+
+       <p>
+           {% if goods.id %}
+           <input class="btn btn-primary btn-block" type="submit" value="确认修改商品">
+            {% else %}
+             <input class="btn btn-primary btn-block" type="submit" value="添加商品">
+           {% endif %}
+
+       </p>
+        </div>
+    </form>
+
+{% endblock %}
+{% block script %}
+<script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace("description",{uiColor:"#5dd733"})
+</script>
+{% endblock %}

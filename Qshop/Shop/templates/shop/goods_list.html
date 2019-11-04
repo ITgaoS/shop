@@ -1,0 +1,34 @@
+{% extends "shop/base.html" %}
+{% block content %}
+     <a href="/Shop/add_goods/" class="btn btn-outline-warning">添加商品</a>
+    <table class="table dataTable">
+    <tr>
+        <th>商品图片</th>
+        <th>商品名称</th>
+        <th>商品价格</th>
+        <th>商品数量</th>
+        <th>出厂日期</th>
+        <th>保质期</th>
+        <th>操作</th>
+</tr>
+    {% for goods in goods_list %}
+    <tr>
+
+        <td><a href="/Shop/goods/{{ goods.id }}"><img  style="width: 45px;height: 45px; margin-top: -10px " src="/static/{{ goods.picture }}" alt=""></a></td>
+        <td><a href="/Shop/goods/{{ goods.id }}">{{ goods.name }}</a></td>
+        <td>{{ goods.price }}元</td>
+        <td>{{ goods.number }}</td>
+        <td>{{ goods.production }}</td>
+        <td>{{ goods.safe_date }}</td>
+        <td>
+            {% ifequal goods.statue 1 %}
+            <a href="/Shop/set_goods/{{ goods.id }}/?set_type=down" class="btn btn-danger"  style="margin-top: -5px">下架</a>
+            {% else %}
+            <a href="/Shop/set_goods/{{ goods.id }}/?set_type=up" class="btn btn-primary"  style="margin-top: -5px">上架</a>
+            {% endifequal %}
+
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
