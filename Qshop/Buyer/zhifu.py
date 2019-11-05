@@ -25,7 +25,7 @@ def Pay(order_id,money):
     )
 
     # 让用户进行支付的支付宝页面网址
-    return "    https://openapi.alipaydev.com/gateway.do?" + order_string
+    return "https://openapi.alipaydev.com/gateway.do?" + order_string
 
 if __name__ == '__main__':
     print(Pay("100000002","1000"))

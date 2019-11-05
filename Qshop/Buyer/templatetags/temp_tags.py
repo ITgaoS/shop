@@ -15,3 +15,6 @@ def goods(name):
 def goods(name,a):
     name=name.replace("l",a)
     return name
+@register.filter()
+def Img(obj):
+    return obj.replace("/media/","")

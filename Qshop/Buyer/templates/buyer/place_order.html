@@ -14,7 +14,7 @@
 {% block title %}
     订单详情
 {% endblock %}
-
+{% load temp_tags %}
 {% block content %}
     <h3 class="common_title">确认收货地址</h3>
 
@@ -51,37 +51,32 @@
 			<li class="col04">数量</li>
 			<li class="col05">小计</li>		
 		</ul>
-		<ul class="goods_list_td clearfix">
-			<li class="col01">1</li>			
-			<li class="col02"><img src="/static/buyer/images/goods/goods012.jpg"></li>
-			<li class="col03">奇异果</li>
-			<li class="col04">500g</li>
-			<li class="col05">25.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">25.80元</li>	
-		</ul>
-		<ul class="goods_list_td clearfix">
-			<li class="col01">2</li>			
-			<li class="col02"><img src="/static/buyer/images/goods/goods003.jpg"></li>
-			<li class="col03">大兴大棚草莓</li>
-			<li class="col04">500g</li>
-			<li class="col05">16.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">16.80元</li>	
-		</ul>
+        {% for foo in order_info %}
+            <ul class="goods_list_td clearfix">
+                        <li class="col01"></li>
+                        <li class="col02"><img src="/static/{{ foo.goods_picture |Img }}"></li>
+                        <li class="col03">{{ foo.goods_name }}</li>
+                        <li class="col04">500g</li>
+                        <li class="col05">{{ foo.goods_price }}元</li>
+                        <li class="col06">{{ foo.goods_number }}</li>
+                        <li class="col07">{{ foo.goods_total }}元</li>
+                    </ul>
+        {% endfor %}
+
+
 	</div>
 
 	<h3 class="common_title">总金额结算</h3>
 
 	<div class="common_list_con clearfix">
 		<div class="settle_con">
-			<div class="total_goods_count">共<em>2</em>件商品，总金额<b>42.60元</b></div>
-			<div class="transit">运费：<b>10元</b></div>
-			<div class="total_pay">实付款：<b>52.60元</b></div>
+			<div class="total_goods_count">共<em>{{ p_order.order_number }}</em>件商品，总金额<b>{{ p_order.order_total }}元</b></div>
+			<div class="transit">运费：<b>0元</b></div>
+			<div class="total_pay">实付款：<b>{{ p_order.order_total }}元</b></div>
 		</div>
 	</div>
 
 	<div class="order_submit clearfix">
-		<a href="/Buyer/get_pay/" id="order_btn">提交订单</a>
+		<a href="/Buyer/get_pay/?order_id={{ p_order.order_id }}&order_total={{ p_order.order_total }}" id="order_btn">提交订单</a>
 	</div>	
 {% endblock %}

@@ -12,3 +12,21 @@ class User(models.Model):
     picture=models.ImageField(upload_to="images",default="images/gougou.png")
     identity=models.IntegerField(default=0)
 
+class History(models.Model):
+    user_email=models.CharField(max_length=32)
+    goods_id=models.IntegerField()
+    goods_name=models.TextField()
+    goods_price=models.TextField()
+    goods_picture=models.TextField()
+
+class GoodsAddress(models.Model):
+
+
+    recver=models.CharField(max_length=64)
+    address=models.TextField()
+    post_number=models.CharField(max_length=32)
+    phono=models.CharField(max_length=32)
+    state=models.IntegerField()
+
+
+

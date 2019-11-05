@@ -11,6 +11,7 @@ path("cart/",cart),
 path("goods_list/",goods_list),
 path('place_order/', pay_order),
 path('get_pay/', get_pay),
+path('add_car/', add_car),
 path('pay_result/', pay_result),
 path('resgister/', resgister),
 re_path("goods/(?P<id>\d+)/",goods)

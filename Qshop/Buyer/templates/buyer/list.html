@@ -14,6 +14,9 @@
     {% endif %}
     </div>
     {% endblock %}
+{% block style %}
+    <script src="/static/buyer/js/jquery-1.12.4.min.js"></script>
+{% endblock %}
 {% block content %}
 
 	<div class="breadcrumb">
@@ -58,7 +61,7 @@
                         <div class="operate">
                             <span class="prize">￥{{ goods.price }}</span>
                             <span class="unit">{{ goods.price }}/500g</span>
-                            <a href="#" class="add_goods" title="加入购物车"></a>
+                            <a href="#" id="{{ goods.id }}" class="add_goods" onclick="add_car(this.id)" title="加入购物车"></a>
                         </div>
                     </li>
                 {% endfor %}
@@ -77,4 +80,27 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+{% block script %}
+    <script >
+    function add_car(obj) {
+        var post_data={
+            "goods_id":obj,
+            "csrfmiddlewaretoken": "{{ csrf_token }}"
+        }
+        $.ajax(
+            {
+            url:"/Buyer/add_car/",
+            type:"post",
+            data:post_data,
+            success:function (data) {
+                alert(data["data"])
+            },
+            error:function (error) {
+                alert(error)
+            }
+            }
+        )
+    }
+    </script>
 {% endblock %}

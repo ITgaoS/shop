@@ -15,7 +15,7 @@ class Goods(models.Model):
     name=models.CharField(max_length=32)
     price=models.FloatField()
     number=models.IntegerField()
-    production=models.DateTimeField()
+    production=models.TextField()
     safe_date=models.CharField(max_length=32)
     picture=models.ImageField(upload_to='shop/img',default="shop/img/gougou.png")
     description=RichTextField()

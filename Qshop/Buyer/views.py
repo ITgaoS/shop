@@ -1,5 +1,8 @@
 from django.shortcuts import render,HttpResponseRedirect
+from django.http import JsonResponse
+
 from Shop.models import GoodsType,Goods
+from Buyer.models import *
 from Shop.views import valid_user,set_password
 from QUser.models import *
 def login_valid(fun):
@@ -35,6 +38,7 @@ def goods_list(request):
         goods_type=GoodsType.objects.get(id=int(id))
         goods_list=goods_type.goods_set.filter(statue=1,good_store=2)
     return render(request,"buyer/list.html",locals())
+
 def goods(request,id):
     email = request.COOKIES.get("email")
     good_data=Goods.objects.get(id=int(id))
@@ -119,13 +123,53 @@ def logout(request):
     response=HttpResponseRedirect("/Buyer/index/")
     response.delete_cookie("email")
     response.delete_cookie("user_id")
+    request.session.clear()
+
     return response
 @login_valid
 def cart(request):
     email=request.COOKIES.get("email")
+    goods_list=BuyCar.objects.filter(car_user=email)
+    count=len(goods_list)
+    if request.method=="POST":
+        data=request.POST
+        post_data=[]
+        for key in data:
+            if key.startswith("check"):
+                id=key.split("_")[1]
+                num="number_%s"%id
+                number=data[num]
+                post_data.append((id,number))
+        p_order=Pay_order()
+        p_order.order_id=str(time.time()).replace(".",",")
+        p_order.order_number=len(post_data)
+        p_order.order_user=User.objects.get(email=request.COOKIES.get("email"))
+        p_order.save()
+        order_total=0
+        for id,number in post_data:
+            number=int(number)
+            goods=Goods.objects.get(id=int(id))
+            o_info=Order_info()
+            o_info.order_id=p_order
+            o_info.goods_name=goods.name
+            o_info.goods_number=number
+            o_info.goods_price=goods.price
+            o_info.goods_total=number*goods.price
+            o_info.goods_picture=goods.picture.url
+            o_info.order_store=goods.good_store
+            o_info.save()
+            order_total+=o_info.goods_total
+        p_order.order_total=order_total
+        p_order.save()
+
+        return HttpResponseRedirect("/Buyer/place_order/?order_id=%s"%p_order.order_id)
     return render(request,"buyer/cart.html",locals())
 def pay_order(request):
     email = request.COOKIES.get("email")
+    order_id=request.GET.get("order_id")
+    if order_id:
+        p_order=Pay_order.objects.get(order_id=order_id)
+        order_info=p_order.order_info_set.all()
     return render(request,"buyer/place_order.html",locals())
 import time
 from Buyer.zhifu import Pay
@@ -137,4 +181,43 @@ def get_pay(request):
 def pay_result(request):
     email = request.COOKIES.get("email")
     data=request.GET
+
+    order_id=request.GET.get("out_trade_no")
+    pay_order=Pay_order.objects.get(order_id=order_id)
+    pay_order.order_state=1
+    pay_order.save()
     return render(request,"Buyer/pay_result.html",locals())
+
+
+
+def add_car(request):
+    result={"state":"error","data":""}
+    if request.method=="POST":
+        user=request.COOKIES.get("email")
+        if user:
+            goods_id=request.POST.get("goods_id")
+            number=request.POST.get("number",1)
+            try:
+                goods=Goods.objects.get(id=goods_id)
+            except Exception as e:
+                result["data"]=str(e)
+            else:
+                car=BuyCar()
+                car.car_user=user
+                car.goods_name=goods.name
+                car.goods_picture=goods.picture
+                car.good_price=goods.price
+                car.good_number=number
+                car.good_total=int(number)*goods.price
+                car.good_store = goods.good_store.id
+                car.goods_id=goods_id
+                car.save()
+                result["state"]="success"
+                result["data"]="加入购物车成功"
+        else:
+            result["data"]="用户未登录 无法添加"
+    return JsonResponse(result)
+
+
+
+
