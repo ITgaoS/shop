@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("Shop/",include("Shop.urls")),
     re_path("Buyer/",include("Buyer.urls")),
+
 ]

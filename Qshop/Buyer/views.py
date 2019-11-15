@@ -42,6 +42,17 @@ def goods_list(request):
 def goods(request,id):
     email = request.COOKIES.get("email")
     good_data=Goods.objects.get(id=int(id))
+    if email:
+        now_data=History.objects.filter(user_email=email).order_by("id")
+        if len(now_data)>=5:
+            now_data[0].delete()
+        history=History()
+        history.user_email=email
+        history.goods_id=id
+        history.goods_name=good_data.name
+        history.goods_price=good_data.price
+        history.goods_picture=good_data.picture
+        history.save()
     return render(request,"buyer/goods.html",locals())
 
 # def login(request):
@@ -141,7 +152,7 @@ def cart(request):
                 number=data[num]
                 post_data.append((id,number))
         p_order=Pay_order()
-        p_order.order_id=str(time.time()).replace(".",",")
+        p_order.order_id=str(time.time()).replace(".","")
         p_order.order_number=len(post_data)
         p_order.order_user=User.objects.get(email=request.COOKIES.get("email"))
         p_order.save()
@@ -167,6 +178,7 @@ def cart(request):
 def pay_order(request):
     email = request.COOKIES.get("email")
     order_id=request.GET.get("order_id")
+    addr=GoodsAddress.objects.all()
     if order_id:
         p_order=Pay_order.objects.get(order_id=order_id)
         order_info=p_order.order_info_set.all()
@@ -187,7 +199,12 @@ def pay_result(request):
     pay_order.order_state=1
     pay_order.save()
     return render(request,"Buyer/pay_result.html",locals())
-
+@login_valid
+def user_center_info(request):
+    user_email=request.COOKIES.get("email")
+    user=User.objects.get(email=user_email)
+    goods_list=History.objects.filter(user_email=user_email)
+    return render(request,"buyer/user_center_info.html",locals())
 
 
 def add_car(request):
@@ -219,5 +236,33 @@ def add_car(request):
     return JsonResponse(result)
 
 
+from QUser.models import GoodsAddress
+def user_center_site(request):
+    email=request.COOKIES.get("email")
+    user=User.objects.get(email=email)
+    addr=user.goodsaddress_set.filter(state=1)[0]
+    if request.method=="POST":
+        recv=request.POST.get("recv")
+        address=request.POST.get("address")
+        post_number=request.POST.get("post_number")
+        phone=request.POST.get("phone")
+        addr=GoodsAddress()
+        addr.recver=recv
+        addr.address=address
+        addr.post_number=post_number
+        addr.phone=phone
+        addr.state=0
+        addr.user=user
+        addr.save()
+    return render(request,"buyer/user_center_site.html",locals())
+
+
+def  user_center_order(request):
+    email=request.COOKIES.get("email")
+    user=User.objects.filter(email=email).first()
+    if user:
+        order_list = user.pay_order_set.all()
+
+    return render(request,"buyer/user_center_order.html",locals())
 
 

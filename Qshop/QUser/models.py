@@ -12,6 +12,13 @@ class User(models.Model):
     picture=models.ImageField(upload_to="images",default="images/gougou.png")
     identity=models.IntegerField(default=0)
 
+class GoodsAddress(models.Model):
+    recver=models.CharField(max_length=64)
+    address=models.TextField()
+    post_number=models.CharField(max_length=32)
+    phone=models.CharField(max_length=32)
+    state=models.IntegerField()
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 class History(models.Model):
     user_email=models.CharField(max_length=32)
     goods_id=models.IntegerField()
@@ -19,14 +26,7 @@ class History(models.Model):
     goods_price=models.TextField()
     goods_picture=models.TextField()
 
-class GoodsAddress(models.Model):
 
-
-    recver=models.CharField(max_length=64)
-    address=models.TextField()
-    post_number=models.CharField(max_length=32)
-    phono=models.CharField(max_length=32)
-    state=models.IntegerField()
 
 
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from QUser.views import *
+from Buyer.models import *
 from Shop.models import *
 import smtplib
 from email.mime.text import MIMEText
@@ -36,7 +37,6 @@ def login_valid(fun):
             identity = user.identity
             if identity >= 1:
                 return fun(request, *args, **kwargs)
-
             return HttpResponseRedirect("/")
         else:
             return HttpResponseRedirect("/Shop/login/")
@@ -97,7 +97,10 @@ def index(request):
     """
     后台卖家首页
     """
-    return render(request, "shop/index.html")
+    email=request.COOKIES.get("email")
+    user=User.objects.get(email=email)
+    good_type_count=user.goods_set.all().count()
+    return render(request, "shop/index.html",locals())
 
 
 def logout(request):
@@ -125,7 +128,6 @@ def forget_password(request):
 def reset_password(request):
     if request.method == 'POST':
         email = request.POST.get("email")
-
         if email and valid_user(email):
             print("sss")
             hash_code = set_password(email)
@@ -342,6 +344,28 @@ def vue_list_goods(request):
     return render(request, "shop/vue_list_goods.html")
 
 
+
+def order_list(request):
+    email=request.COOKIES.get("email")
+    user=User.objects.get(email=email)
+    order=user.order_info_set.all()
+    page_number = request.GET.get("page", 1)
+    paginator = Paginator(order, 5)
+    order_list = paginator.page(int(page_number))
+    page_range=list(paginator.page_range)
+    return render(request,"shop/order_list.html",locals())
+def send_shop(request):
+    order_id=request.GET.get("order_id")
+    if order_id:
+        p_order=Pay_order.objects.get(order_id=order_id)
+        p_order.order_state=2
+        p_order.save()
+    return HttpResponseRedirect("/Shop/order_list/")
+
+
+
+
+
 from django.http import HttpResponse
 from CeleryTask.tasks import add
 
@@ -351,3 +375,30 @@ def get_celery(request):
     y = 2
     add.delay(x, y)
     return HttpResponse("调用完成")
+
+
+
+def get_address(request):
+    addr=GoodsAddress()
+    addr.recver="123"
+    addr.address="12345"
+    addr.phone="123432"
+    addr.post_number="dsaf"
+    addr.state=1
+    addr.user=User.objects.get(id=111)
+    addr.save()
+    return HttpResponse("hello")
+
+
+def return_goods_number(request):
+    result={"goods_name":[],"goods_number":[],"goods_list":[]}
+    id =request.GET.get("id")
+    if id:
+        user=User.objects.get(id=id)
+        goods=user.goods_set.order_by("number")[:7]
+        for i in goods:
+            result["goods_name"].append(i.name)
+            result["goods_number"].append(i.number)
+            result["goods_list"].append({"name":i.name,"value":i.number})
+    return JsonResponse(result)
+

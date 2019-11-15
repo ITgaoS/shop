@@ -47,10 +47,7 @@
             <td>{{ g.picture }}</td>
             <td v-on:click="put_down_away(g)">
              <a id="bu" class="btn btn-primary" style="color: white;">{{ g.statue }}</a>
-            </td>
-        </tr>
-    </table>
-        <div class="dataTables_paginate paging_simple_numbers">
+            </td>        <div class="dataTables_paginate paging_simple_numbers">
             <ul class="pagination">
               <li class="paginate_button page-item" v-for="page in page_range">
                   <a class="page-link" v-on:click="get_page_data(page)">
@@ -59,6 +56,9 @@
               </li>
             </ul>
         </div>
+        </tr>
+    </table>
+
         </div>
     </div>
     {% endverbatim myblock %}

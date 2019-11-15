@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #"Qshop.middleware.MiddleWareIp"
 ]
 
 ROOT_URLCONF = 'Qshop.urls'
@@ -83,9 +84,16 @@ WSGI_APPLICATION = 'Qshop.wsgi.application'
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME':'qshop',
-#         'HOST':'localhost',
+#         'HOST':'10.10.101.227',
 #         'USER':'root',
-#         'PASSWORD':'123456',
+#         'PASSWORD':'123',
+#     },
+#     'slave': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME':'qshop',
+#         'HOST':'10.10.101.84',
+#         'USER':'root',
+#         'PASSWORD':'123',
 #     }
 # }
 
@@ -165,3 +173,16 @@ CELERYBEAT_SCHEDULE={
 CKEDITOR_UPLOAD_PATH="upload"
 CKEDITOR_IMAGE_BACKEND="pillow"
 PAZE_SIZE=2
+
+CACHES={
+    "default":
+        {
+            "BACKEND":"django.core.cache.backends.db.DatabaseCache",
+            "LOCATION":["127.0.0.1:11211"],
+            "TIMEOUT":300,
+            # "OPTIONS":{
+            # "MAX_ENTRIES":300,
+            # "CULL_FREQUENCY":3
+            # }
+        }
+}

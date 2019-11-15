@@ -1,3 +1,4 @@
+from django.views.decorators.cache import cache_page
 from django.urls import path,re_path,include
 from Shop.views import *
 
@@ -21,8 +22,12 @@ urlpatterns=[
     path("ckeditor/",include("ckeditor_uploader.urls")),
     re_path("Goods/",GoodsView.as_view()),
     path("vue_list_goods/",vue_list_goods),
+    path("order_list/",order_list),
+    path("send_shop/",send_shop),
+    path("return_goods_number/",return_goods_number)
  ]
 
 urlpatterns=urlpatterns+[
     path("get_celery/", get_celery),
+    path("get_address/", get_address),
 ]

@@ -18,3 +18,6 @@ def goods(name,a):
 @register.filter()
 def Img(obj):
     return obj.replace("/media/","")
+@register.filter
+def phone(obj):
+    return obj[:3]+"****"+obj[-4:]
